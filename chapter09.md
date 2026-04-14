@@ -1,4 +1,8 @@
-# 第九章：Actor-Critic 架构——价值与策略的协同
+---
+title: "第9章：Actor-Critic 架构"
+nav_order: 10
+description: "价值与策略的协同：A2C、A3C、GAE 完整推导"
+---
 
 > **目标**：理解 Actor-Critic 如何结合策略梯度（低偏差）和 TD 学习（低方差），推导 A2C、GAE，为 PPO 打好基础。
 

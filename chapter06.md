@@ -1,4 +1,8 @@
-# 第六章：无模型控制——Q-Learning 与 Sarsa
+---
+title: "第6章：Q-Learning 与 Sarsa"
+nav_order: 7
+description: "无模型控制：ε-greedy、Sarsa、Q-Learning 推导，On/Off-Policy 本质区别"
+---
 
 > **目标**：从"估计价值"跨越到"改进策略"，掌握 Q-Learning 和 Sarsa——一个是现代深度 RL 的鼻祖，一个阐明了 On/Off-Policy 的本质区别。
 

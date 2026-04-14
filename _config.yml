@@ -1,0 +1,32 @@
+title: "强化学习教程：从入门到精通"
+description: "面向 SLAM 工程师的强化学习完整教程，从 Q-Learning 到 PPO/SAC，含人形机器人行走控制实战"
+
+remote_theme: just-the-docs/just-the-docs
+
+url: "https://quitino.github.io"
+baseurl: "/RL_NOTE"
+
+plugins:
+  - jekyll-remote-theme
+  - jekyll-seo-tag
+
+# just-the-docs 配置
+color_scheme: light
+search_enabled: true
+heading_anchors: true
+
+# 页脚
+footer_content: "强化学习教程 &copy; 2024 | 基于强化学习的人形机器人行走控制"
+
+# 代码高亮
+kramdown:
+  syntax_highlighter_opts:
+    block:
+      line_numbers: false
+
+# 排除不需要发布的文件
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - "*.gemspec"
+  - vendor/

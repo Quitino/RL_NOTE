@@ -1,4 +1,8 @@
-# 第十章：PPO——现代机器人 RL 的主力算法
+---
+title: "第10章：PPO 算法"
+nav_order: 11
+description: "现代机器人 RL 主力：从 TRPO 到 PPO-Clip，人形机器人行走训练实战"
+---
 
 > **目标**：理解从 TRPO 到 PPO 的演进逻辑，掌握 PPO-Clip 的完整推导，以及它在人形机器人行走训练中的实际应用。
 
