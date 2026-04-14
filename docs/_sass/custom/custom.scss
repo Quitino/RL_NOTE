@@ -1,9 +1,9 @@
-// 扩展内容区宽度，减少宽屏下的两侧留白
+// 宽屏下扩展内容区，减少两侧留白
+// just-the-docs 实际类名：.main-content（文章内容）、.main（整体右侧区域）
 .main-content {
   max-width: 100%;
 }
 
-// 主区域不限制最大宽度
-.main-content-wrap {
+.main {
   max-width: none;
 }
