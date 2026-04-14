@@ -1,0 +1,12 @@
+# Claude Code
+.claude/
+
+# Jekyll build output
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+
+# OS
+.DS_Store
+Thumbs.db
