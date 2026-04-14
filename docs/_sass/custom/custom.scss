@@ -1,9 +1,7 @@
-// 移除内容区宽度上限，消除宽屏右侧留白
-// .main-content-wrap 是 just-the-docs 中真正设置 max-width 的容器
-.main-content-wrap {
-  max-width: none !important;
-}
-
-.main-content {
+// 移除内容区所有宽度限制，消除宽屏右侧留白
+.main-content-wrap,
+.main-content,
+main#content,
+article.page {
   max-width: none !important;
 }
