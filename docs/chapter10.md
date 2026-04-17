@@ -112,9 +112,9 @@ L^CLIP 关于 r_t 的函数形状：
 
 **直觉总结**：PPO-Clip 是一个**悲观的（pessimistic）**目标——当改变有利时，限制获益上限；当改变不利时，也限制损失下限。这确保了每次更新不会偏离旧策略太远。
 
-![PPO-Clip objective shape: surrogate ratio r vs clipped objective for positive and negative advantage](../asserts/ch10_ppo/ppo_clip_objective.png)
+![PPO-Clip objective shape: surrogate ratio r vs clipped objective for positive and negative advantage](asserts/ch10_ppo/ppo_clip_objective.png)
 
-![TRPO trust region (KL constraint) vs PPO-Clip boundary in parameter space](../asserts/ch10_ppo/trpo_vs_ppo.png)
+![TRPO trust region (KL constraint) vs PPO-Clip boundary in parameter space](asserts/ch10_ppo/trpo_vs_ppo.png)
 
 ---
 
@@ -165,7 +165,7 @@ PPO 算法（On-Policy）
      可选：若 KL(π_old‖π_new) > KL_target，提前停止
 ```
 
-![PPO training loop flowchart — from initialization through rollout collection, GAE computation, to K-epoch updates](../asserts/ch10_ppo/ppo_training_loop.png)
+![PPO training loop flowchart — from initialization through rollout collection, GAE computation, to K-epoch updates](asserts/ch10_ppo/ppo_training_loop.png)
 
 **与 DQN 的关键区别**：
 

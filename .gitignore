@@ -1,6 +1,9 @@
 # Claude Code
 .claude/
 
+# Root-level asserts (moved to docs/asserts for GitHub Pages)
+/asserts/
+
 # Jekyll build output
 _site/
 .sass-cache/

@@ -41,7 +41,7 @@ RL 算法的两大核心维度：
                      SAC-Discrete
 ```
 
-![RL algorithm taxonomy tree: model-based vs model-free, on-policy vs off-policy](../asserts/ch11_algorithms/rl_taxonomy.png)
+![RL algorithm taxonomy tree: model-based vs model-free, on-policy vs off-policy](asserts/ch11_algorithms/rl_taxonomy.png)
 
 ---
 
@@ -124,7 +124,7 @@ SAC 更新步骤：
   5. 更新 α（可选）：调整熵目标
 ```
 
-![SAC entropy-regularized objective: policy distributions with different entropy and temperature α effect](../asserts/ch11_algorithms/sac_entropy.png)
+![SAC entropy-regularized objective: policy distributions with different entropy and temperature α effect](asserts/ch11_algorithms/sac_entropy.png)
 
 **论文**：*Soft Actor-Critic: Off-Policy Maximum Entropy Deep Reinforcement Learning* (Haarnoja et al., 2018) — [arXiv:1801.01290](https://arxiv.org/abs/1801.01290)  
 **GitHub**：[haarnoja/sac](https://github.com/haarnoja/sac)（原版）  
@@ -245,7 +245,7 @@ $$L^{CQL} = \alpha \cdot \mathbb{E}_{s \sim D, a \sim \pi}[Q(s,a)] - \alpha \cdo
 工程实现难度：DQN < PPO < SAC < TD3 < TRPO < MBPO
 ```
 
-![Sample efficiency vs stability trade-off for major RL algorithms](../asserts/ch11_algorithms/sample_efficiency.png)
+![Sample efficiency vs stability trade-off for major RL algorithms](asserts/ch11_algorithms/sample_efficiency.png)
 
 ---
 

@@ -50,7 +50,7 @@ $$\pi(a|s) = \begin{cases} 1 - \varepsilon + \frac{\varepsilon}{|\mathcal{A}|} &
 ε 的衰减策略：ε_t = ε₀ · decay^t 或 ε_t = ε₀/sqrt(t)
 ```
 
-![Epsilon-greedy exploration decay schedule and action selection probability distribution](../asserts/ch06_qlearning/epsilon_greedy.png)
+![Epsilon-greedy exploration decay schedule and action selection probability distribution](asserts/ch06_qlearning/epsilon_greedy.png)
 
 ---
 
@@ -153,9 +153,9 @@ Sarsa：      学到绕远路走的安全路径（次优但鲁棒）
      所以学会了远离悬崖）
 ```
 
-![On-policy (Sarsa) vs off-policy (Q-Learning) data flow diagram](../asserts/ch06_qlearning/on_off_policy.png)
+![On-policy (Sarsa) vs off-policy (Q-Learning) data flow diagram](asserts/ch06_qlearning/on_off_policy.png)
 
-![Q-Learning vs Sarsa value convergence animation on a grid world](../asserts/ch06_qlearning/q_vs_sarsa.gif)
+![Q-Learning vs Sarsa value convergence animation on a grid world](asserts/ch06_qlearning/q_vs_sarsa.gif)
 
 ---
 

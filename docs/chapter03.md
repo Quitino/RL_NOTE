@@ -39,13 +39,13 @@ R: 前进速度 - 摔倒惩罚 - 能量消耗 - 姿态偏差
 γ: 通常取 0.99
 ```
 
-![MDP 5-tuple structure: state, action, transition, reward, and discount factor flow diagram](../asserts/ch03_mdp/mdp_structure.png)
+![MDP 5-tuple structure: state, action, transition, reward, and discount factor flow diagram](asserts/ch03_mdp/mdp_structure.png)
 
 ---
 
 ## 3.2 状态转移函数
 
-状态转移函数 $\mathcal{P}(s'|s,a)$ 描述了在状态 $s$ 执行动作 $a$ 后，转移到状态 $s'$ 的概率。
+状态转移函数 $\mathcal{P}(s' \vert s,a)$ 描述了在状态 $s$ 执行动作 $a$ 后，转移到状态 $s'$ 的概率。
 
 ```
                   动作 a
@@ -53,7 +53,7 @@ R: 前进速度 - 摔倒惩罚 - 能量消耗 - 姿态偏差
                                  P(s'|s,a)
 ```
 
-**确定性环境**：$\mathcal{P}(s'|s,a) = 1$ 对某一个 $s'$ 成立，其余为 0。
+**确定性环境**：$\mathcal{P}(s'\vert s,a) = 1$ 对某一个 $s'$ 成立，其余为 0。
 
 **随机性环境**：同样的 $(s,a)$ 可能导致多种 $s'$，例如机器人脚踩到随机地形。
 
@@ -79,7 +79,7 @@ $$G_t = r_t + \gamma r_{t+1} + \gamma^2 r_{t+2} + \cdots = \sum_{k=0}^{\infty} \
 
 当 $\vert r_t \vert \leq r_{\max}$ 时，$G_t \leq \frac{r_{\max}}{1-\gamma}$（等比级数，有界）。
 
-![Discounted return weights over time steps and effective planning horizon vs gamma](../asserts/ch03_mdp/discount_return.png)
+![Discounted return weights over time steps and effective planning horizon vs gamma](asserts/ch03_mdp/discount_return.png)
 
 ### γ 的直觉意义
 
@@ -204,7 +204,7 @@ $$V^\pi(s) = \sum_a \pi(a|s) Q^\pi(s, a) = \mathbb{E}_{a \sim \pi}[Q^\pi(s, a)]$
          到新状态...  到新状态...  到新状态...
 ```
 
-![State-value V(s) vs Q-value Q(s,a) relationship: V as policy-weighted average over Q values](../asserts/ch03_mdp/v_vs_q.png)
+![State-value V(s) vs Q-value Q(s,a) relationship: V as policy-weighted average over Q values](asserts/ch03_mdp/v_vs_q.png)
 
 ---
 

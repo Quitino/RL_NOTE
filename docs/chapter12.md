@@ -119,7 +119,7 @@ domain_rand = {
 }
 ```
 
-![Domain randomization parameter distributions and their effect on sim-to-real transfer](../asserts/ch12_sim_to_real/domain_randomization.png)
+![Domain randomization parameter distributions and their effect on sim-to-real transfer](asserts/ch12_sim_to_real/domain_randomization.png)
 
 ---
 
@@ -193,7 +193,7 @@ def compute_reward(env):
             0.01 * r_action_rate + 0.5 * r_orientation)
 ```
 
-![Reward component breakdown for humanoid locomotion training](../asserts/ch12_sim_to_real/reward_breakdown.png)
+![Reward component breakdown for humanoid locomotion training](asserts/ch12_sim_to_real/reward_breakdown.png)
 
 ---
 
@@ -350,7 +350,7 @@ GPU：单卡 A100 或 4090
 [ ] 真机测试顺序：悬挂测试 → 低速行走 → 全速
 ```
 
-![Sim-to-Real deployment pipeline — from simulation training to real robot deployment](../asserts/ch12_sim_to_real/sim2real_pipeline.png)
+![Sim-to-Real deployment pipeline — from simulation training to real robot deployment](asserts/ch12_sim_to_real/sim2real_pipeline.png)
 
 ### 常见 Sim-to-Real 失败模式
 

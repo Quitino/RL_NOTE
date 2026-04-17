@@ -177,7 +177,7 @@ TD 误差 $\delta_t = r_t + \gamma V(s_{t+1}) - V(s_t)$ 是一个神奇的信号
 **MC 无偏**：$G_t$ 是 $V^\pi(s_t)$ 的无偏估计（期望等于真值）  
 **TD 有偏**：$r_t + \gamma V(s_{t+1})$ 用了不准确的 $V(s_{t+1})$，引入偏差（但随着训练进行，偏差减小）
 
-![MC vs TD bias-variance tradeoff: conceptual positions and return estimates along trajectory](../asserts/ch05_mc_td/mc_vs_td_bias_variance.png)
+![MC vs TD bias-variance tradeoff: conceptual positions and return estimates along trajectory](asserts/ch05_mc_td/mc_vs_td_bias_variance.png)
 
 ---
 
@@ -198,7 +198,7 @@ n↓ → 偏差↑, 方差↓
 
 **n 的选择**是偏差-方差权衡的旋钮，这个思想在 GAE（第9章）中得到精细化。
 
-![n-step return: how different n values span the spectrum from TD(0) to Monte Carlo](../asserts/ch05_mc_td/nstep_return.png)
+![n-step return: how different n values span the spectrum from TD(0) to Monte Carlo](asserts/ch05_mc_td/nstep_return.png)
 
 ---
 
@@ -222,7 +222,7 @@ $$\theta \leftarrow \theta + \alpha \delta_t \mathbf{e}_t$$
 
 资格迹记录了"哪些状态对当前 TD 误差负有责任"，使得信用分配更高效。
 
-![TD(λ) eligibility trace decay animation — trace builds up at visited states and decays over time](../asserts/ch05_mc_td/td_lambda_trace.gif)
+![TD(λ) eligibility trace decay animation — trace builds up at visited states and decays over time](asserts/ch05_mc_td/td_lambda_trace.gif)
 
 ---
 
