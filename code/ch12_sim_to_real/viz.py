@@ -13,10 +13,11 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch
 from scipy.stats import norm, uniform
 
-plt.rcParams['font.family'] = 'DejaVu Sans'
+plt.rcParams['font.family'] = 'Noto Sans CJK JP'
+plt.rcParams['axes.unicode_minus'] = False
 plt.rcParams['font.size'] = 11
 
-OUT = os.path.join(os.path.dirname(__file__), '../../asserts/ch12_sim_to_real')
+OUT = os.path.join(os.path.dirname(__file__), '../../docs/asserts/ch12_sim_to_real')
 os.makedirs(OUT, exist_ok=True)
 
 

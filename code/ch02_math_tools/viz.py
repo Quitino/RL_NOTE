@@ -14,10 +14,11 @@ from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 import matplotlib.patheffects as pe
 from scipy.stats import norm
 
-plt.rcParams['font.family'] = 'DejaVu Sans'
+plt.rcParams['font.family'] = 'Noto Sans CJK JP'
+plt.rcParams['axes.unicode_minus'] = False
 plt.rcParams['font.size'] = 11
 
-OUT = os.path.join(os.path.dirname(__file__), '../../asserts/ch02_math_tools')
+OUT = os.path.join(os.path.dirname(__file__), '../../docs/asserts/ch02_math_tools')
 os.makedirs(OUT, exist_ok=True)
 
 

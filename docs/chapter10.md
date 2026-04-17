@@ -53,6 +53,8 @@ $$L^{CPI}(\theta) = \mathbb{E}_t\left[r_t(\theta) \hat{A}_t\right]$$
 
 **TRPO 的问题**：KL 约束需要二阶优化（共轭梯度 + 线搜索），实现复杂，计算昂贵，难以与深度网络配合使用。
 
+![TRPO surrogate objective derivation: from J(θ')-J(θ) through importance sampling to KL-constrained optimization](asserts/ch10_ppo/trpo_derivation_flow.png)
+
 **论文**：*Trust Region Policy Optimization* (Schulman et al., 2015) — [arXiv:1502.05477](https://arxiv.org/abs/1502.05477)
 
 ---
@@ -115,6 +117,8 @@ L^CLIP 关于 r_t 的函数形状：
 ![PPO-Clip objective shape: surrogate ratio r vs clipped objective for positive and negative advantage](asserts/ch10_ppo/ppo_clip_objective.png)
 
 ![TRPO trust region (KL constraint) vs PPO-Clip boundary in parameter space](asserts/ch10_ppo/trpo_vs_ppo.png)
+
+![TRPO vs PPO feature comparison: constraint type, computational efficiency, implementation difficulty, stability](asserts/ch10_ppo/trpo_ppo_comparison.png)
 
 ---
 

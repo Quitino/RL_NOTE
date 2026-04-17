@@ -43,6 +43,8 @@ RL 算法的两大核心维度：
 
 ![RL algorithm taxonomy tree: model-based vs model-free, on-policy vs off-policy](asserts/ch11_algorithms/rl_taxonomy.png)
 
+![RL algorithm categories Venn diagram: Value-Based / Policy-Based / Actor-Critic overlap with representative algorithms](asserts/ch11_algorithms/rl_taxonomy_venn.png)
+
 ---
 
 ## 11.2 基于模型的 RL（Model-Based RL）

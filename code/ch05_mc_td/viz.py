@@ -13,10 +13,11 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.patches import FancyBboxPatch
 
-plt.rcParams['font.family'] = 'DejaVu Sans'
+plt.rcParams['font.family'] = 'Noto Sans CJK JP'
+plt.rcParams['axes.unicode_minus'] = False
 plt.rcParams['font.size'] = 11
 
-OUT = os.path.join(os.path.dirname(__file__), '../../asserts/ch05_mc_td')
+OUT = os.path.join(os.path.dirname(__file__), '../../docs/asserts/ch05_mc_td')
 os.makedirs(OUT, exist_ok=True)
 
 

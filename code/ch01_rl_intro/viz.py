@@ -13,10 +13,11 @@ import matplotlib.patches as mpatches
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 import matplotlib.animation as animation
 
-plt.rcParams['font.family'] = 'DejaVu Sans'
+plt.rcParams['font.family'] = 'Noto Sans CJK JP'
+plt.rcParams['axes.unicode_minus'] = False
 plt.rcParams['font.size'] = 11
 
-OUT = os.path.join(os.path.dirname(__file__), '../../asserts/ch01_rl_intro')
+OUT = os.path.join(os.path.dirname(__file__), '../../docs/asserts/ch01_rl_intro')
 os.makedirs(OUT, exist_ok=True)
 
 

@@ -4,6 +4,7 @@ Figures:
   - pg_theorem_flow.png        : Policy gradient theorem derivation flow
   - reinforce_variance.png     : REINFORCE high variance illustration
   - baseline_variance.gif      : Baseline subtraction variance reduction (animated)
+  - pg_vs_value_comparison.png : Policy gradient vs value-based update comparison
 """
 import os
 import numpy as np
@@ -13,10 +14,11 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.patches import FancyBboxPatch
 
-plt.rcParams['font.family'] = 'DejaVu Sans'
+plt.rcParams['font.family'] = 'Noto Sans CJK JP'
+plt.rcParams['axes.unicode_minus'] = False
 plt.rcParams['font.size'] = 11
 
-OUT = os.path.join(os.path.dirname(__file__), '../../asserts/ch08_policy_gradient')
+OUT = os.path.join(os.path.dirname(__file__), '../../docs/asserts/ch08_policy_gradient')
 os.makedirs(OUT, exist_ok=True)
 
 
@@ -170,8 +172,78 @@ def plot_baseline_anim():
     print(f"Saved: {path}")
 
 
+# ── Figure 4: Policy Gradient vs Value Learning Comparison ───────────────────
+def plot_pg_vs_value_comparison():
+    _, ax = plt.subplots(figsize=(13, 6.5))
+    ax.set_xlim(0, 13)
+    ax.set_ylim(0, 8)
+    ax.axis('off')
+    ax.set_title('Policy Gradient vs Value-Based Methods: Core Differences',
+                 fontsize=13, fontweight='bold')
+
+    def box(cx, cy, w, h, txt, color, fontsize=9.5):
+        ax.add_patch(FancyBboxPatch((cx - w/2, cy - h/2), w, h,
+                                    boxstyle='round,pad=0.15', fc=color, ec='#333',
+                                    lw=1.5, alpha=0.9))
+        ax.text(cx, cy, txt, ha='center', va='center', fontsize=fontsize,
+                color='white', fontweight='bold', multialignment='center')
+
+    # Column headers
+    box(3.2, 7.4, 5.5, 0.8, 'Value-Based (Q-Learning / DQN)', '#4C8EBF', 11)
+    box(9.8, 7.4, 5.5, 0.8, 'Policy Gradient (REINFORCE / PPO)', '#5BAD6F', 11)
+
+    # Row labels
+    row_labels = ['学习对象', '优化目标', '更新方程', '动作空间', '策略类型', '探索机制']
+    row_ys = [6.3, 5.3, 4.3, 3.3, 2.3, 1.3]
+    left_vals = [
+        'Q_θ(s,a)  — 动作价值函数',
+        'min  ½(r + γ·max Q_{θ\'} − Q_θ)²',
+        'θ ← θ − α · ∂J/∂θ\n(最小化TD误差)',
+        '离散（枚举取 argmax）',
+        '确定性（ε-greedy 取 max）',
+        'ε-greedy 外部显式探索',
+    ]
+    right_vals = [
+        'π_θ(a|s)  — 策略函数',
+        'max  E_π[Σ A^π_θ(s,a)]',
+        'θ ← θ + α · ∇_θ log π_θ(a|s) · A\n(最大化期望优势)',
+        '连续 + 离散均适用',
+        '随机（输出分布，内置随机性）',
+        '策略熵自然提供探索',
+    ]
+
+    for lbl, y, lv, rv in zip(row_labels, row_ys, left_vals, right_vals):
+        # Row label
+        ax.add_patch(FancyBboxPatch((0.1, y - 0.38), 1.1, 0.76,
+                                    boxstyle='round,pad=0.05', fc='#555555', ec='white', lw=0.8))
+        ax.text(0.65, y, lbl, ha='center', va='center', fontsize=8.5, color='white', fontweight='bold')
+        # Left (value-based)
+        ax.add_patch(FancyBboxPatch((1.35, y - 0.38), 5.5, 0.76,
+                                    boxstyle='square,pad=0', fc='#EBF5FB', ec='#AED6F1', lw=0.8))
+        ax.text(4.1, y, lv, ha='center', va='center', fontsize=8.8, color='#1A5276',
+                multialignment='center')
+        # Right (policy gradient)
+        ax.add_patch(FancyBboxPatch((7.15, y - 0.38), 5.5, 0.76,
+                                    boxstyle='square,pad=0', fc='#EAFAF1', ec='#A9DFBF', lw=0.8))
+        ax.text(9.9, y, rv, ha='center', va='center', fontsize=8.8, color='#1E8449',
+                multialignment='center')
+
+    # Bottom note
+    ax.text(6.5, 0.5,
+            'Actor-Critic = Value-Based (Critic 估计 V/A) + Policy Gradient (Actor 优化 π)',
+            ha='center', fontsize=10, color='#333',
+            bbox=dict(fc='#FFFDE7', ec='#F0C000', boxstyle='round,pad=0.4', lw=1.2))
+
+    plt.tight_layout()
+    path = os.path.join(OUT, 'pg_vs_value_comparison.png')
+    plt.savefig(path, dpi=150, bbox_inches='tight')
+    plt.close()
+    print(f"Saved: {path}")
+
+
 if __name__ == '__main__':
     plot_pg_theorem_flow()
     plot_reinforce_variance()
     plot_baseline_anim()
+    plot_pg_vs_value_comparison()
     print("Ch08 done.")

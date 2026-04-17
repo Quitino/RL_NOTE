@@ -172,6 +172,14 @@ Replay Buffer（容量 N = 1,000,000）：
 
 DeepMind 2013/2015 年的 DQN 论文将深度神经网络、经验回放、目标网络结合，在 Atari 游戏上超越了人类水平。
 
+### 双网络架构全景
+
+DQN 的核心是**在线网络**与**目标网络**的解耦，配合经验回放实现稳定训练：
+
+![DQN dual-network architecture with replay buffer — online network, target network, and MSE loss flow](asserts/ch07_dqn/dqn_networks.png)
+
+### DQN 算法伪代码
+
 ```
 DQN 算法（Mnih et al., 2015）
 ────────────────────────────────────────────────────────────

@@ -12,10 +12,11 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch
 
-plt.rcParams['font.family'] = 'DejaVu Sans'
+plt.rcParams['font.family'] = 'Noto Sans CJK JP'
+plt.rcParams['axes.unicode_minus'] = False
 plt.rcParams['font.size'] = 11
 
-OUT = os.path.join(os.path.dirname(__file__), '../../asserts/ch09_actor_critic')
+OUT = os.path.join(os.path.dirname(__file__), '../../docs/asserts/ch09_actor_critic')
 os.makedirs(OUT, exist_ok=True)
 
 

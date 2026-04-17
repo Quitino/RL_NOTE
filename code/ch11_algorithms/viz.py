@@ -4,6 +4,8 @@ Figures:
   - rl_taxonomy.png          : RL algorithm taxonomy tree
   - sac_entropy.png          : SAC entropy-regularized objective
   - sample_efficiency.png    : Sample efficiency vs stability for major algorithms
+  - rl_taxonomy_venn.png     : Venn diagram — Value-Based / Actor-Critic / Policy-Based
+  - rl_framework_summary.png : RL framework summary — Actor, Critic, state/action/reward
 """
 import os
 import numpy as np
@@ -12,10 +14,11 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch
 
-plt.rcParams['font.family'] = 'DejaVu Sans'
+plt.rcParams['font.family'] = 'Noto Sans CJK JP'
+plt.rcParams['axes.unicode_minus'] = False
 plt.rcParams['font.size'] = 11
 
-OUT = os.path.join(os.path.dirname(__file__), '../../asserts/ch11_algorithms')
+OUT = os.path.join(os.path.dirname(__file__), '../../docs/asserts/ch11_algorithms')
 os.makedirs(OUT, exist_ok=True)
 
 
@@ -176,8 +179,127 @@ def plot_sample_efficiency():
     print(f"Saved: {path}")
 
 
+# ── Figure 4: RL Taxonomy Venn Diagram ───────────────────────────────────────
+def plot_rl_taxonomy_venn():
+    _, ax = plt.subplots(figsize=(11, 7))
+    ax.set_xlim(0, 11)
+    ax.set_ylim(0, 8)
+    ax.axis('off')
+    ax.set_title('RL Algorithm Categories: Venn Diagram\n'
+                 'Value-Based  /  Policy-Based  /  Actor-Critic',
+                 fontsize=13, fontweight='bold')
+
+    from matplotlib.patches import Ellipse
+
+    # Value-Based ellipse (left)
+    e1 = Ellipse((3.8, 4.0), 5.5, 5.5, color='#4C8EBF', alpha=0.30)
+    ax.add_patch(e1)
+    # Policy-Based ellipse (right)
+    e2 = Ellipse((7.2, 4.0), 5.5, 5.5, color='#5BAD6F', alpha=0.30)
+    ax.add_patch(e2)
+
+    # Labels for pure regions
+    ax.text(2.2, 4.0, 'Value-Based\n(纯价值方法)',
+            ha='center', va='center', fontsize=10.5, color='#1A5276', fontweight='bold')
+    ax.text(8.8, 4.0, 'Policy-Based\n(纯策略方法)',
+            ha='center', va='center', fontsize=10.5, color='#1E8449', fontweight='bold')
+
+    # Overlap label — Actor-Critic
+    ax.add_patch(FancyBboxPatch((4.1, 3.55), 2.8, 0.9,
+                                boxstyle='round,pad=0.15', fc='#E8994C', ec='#C0670C',
+                                lw=2, alpha=0.92))
+    ax.text(5.5, 4.0, 'Actor-Critic\n(兼具两者)',
+            ha='center', va='center', fontsize=10, color='white', fontweight='bold')
+
+    # Value-based algorithms
+    for y, txt in [(5.8, 'Q-Learning'), (5.1, 'DQN / DDQN'), (4.4, 'Dueling DQN'), (3.7, 'Rainbow')]:
+        ax.text(2.3, y, f'• {txt}', ha='center', fontsize=9, color='#1A5276')
+
+    # Policy-based algorithms
+    for y, txt in [(5.8, 'REINFORCE'), (5.1, 'TRPO'), (4.4, 'VPG'), (3.7, '(pure PG)')]:
+        ax.text(8.7, y, f'• {txt}', ha='center', fontsize=9, color='#1E8449')
+
+    # Actor-Critic algorithms (bottom of overlap area)
+    ac_algos = ['A2C / A3C', 'PPO', 'SAC', 'DDPG / TD3']
+    for i, txt in enumerate(ac_algos):
+        ax.text(5.5, 2.8 - i * 0.5, f'• {txt}', ha='center', fontsize=9, color='#784212')
+
+    # Bottom note
+    ax.text(5.5, 0.5,
+            'Actor = π_θ(a|s) 策略网络    Critic = V_w(s) 或 Q_w(s,a) 价值网络',
+            ha='center', fontsize=10, color='#333',
+            bbox=dict(fc='#FFFDE7', ec='#F0C000', boxstyle='round,pad=0.35', lw=1.2))
+
+    plt.tight_layout()
+    path = os.path.join(OUT, 'rl_taxonomy_venn.png')
+    plt.savefig(path, dpi=150, bbox_inches='tight')
+    plt.close()
+    print(f"Saved: {path}")
+
+
+# ── Figure 5: RL Framework Summary ───────────────────────────────────────────
+def plot_rl_framework_summary():
+    _, ax = plt.subplots(figsize=(12, 6))
+    ax.set_xlim(0, 12)
+    ax.set_ylim(0, 7)
+    ax.axis('off')
+    ax.set_title('强化学习原理总结: Actor-Critic 框架', fontsize=13, fontweight='bold')
+
+    def box(cx, cy, w, h, txt, color, fontsize=10):
+        ax.add_patch(FancyBboxPatch((cx - w/2, cy - h/2), w, h,
+                                    boxstyle='round,pad=0.15', fc=color, ec='#333',
+                                    lw=1.8, alpha=0.92))
+        ax.text(cx, cy, txt, ha='center', va='center', fontsize=fontsize,
+                color='white', fontweight='bold', multialignment='center')
+
+    def arr(x0, y0, x1, y1, lbl='', color='#444444', lw=2.0):
+        ax.annotate('', xy=(x1, y1), xytext=(x0, y0),
+                    arrowprops=dict(arrowstyle='->', color=color, lw=lw))
+        if lbl:
+            mx, my = (x0+x1)/2, (y0+y1)/2
+            ax.text(mx, my + 0.22, lbl, ha='center', fontsize=8.5, color=color)
+
+    # Agent components
+    box(3.0, 5.2, 4.5, 1.2, 'Actor  π_θ(a|s)\n(策略网络，输出动作分布)', '#4C8EBF', 10)
+    box(3.0, 2.8, 4.5, 1.2, 'Critic  V_w(s)\n(价值网络，预测期望回报)', '#E8994C', 10)
+    # Environment
+    box(9.5, 4.0, 3.5, 1.2, 'Environment\n(环境)', '#5BAD6F', 10)
+
+    # Arrows: agent ↔ environment
+    arr(5.25, 5.5, 7.75, 4.5, 'action  a_t', '#4C8EBF')
+    arr(7.75, 3.6, 5.25, 2.5, 'reward r_t', '#E8994C')
+    arr(7.75, 4.4, 5.25, 5.1, 'state  s_t', '#555555')
+    arr(7.75, 3.8, 5.25, 2.9, "next state  s_{t+1}", '#555555')
+
+    # Critic → Actor
+    ax.annotate('', xy=(3.0, 4.6), xytext=(3.0, 3.4),
+                arrowprops=dict(arrowstyle='->', color='#BF4C4C', lw=2.0, linestyle='dashed'))
+    ax.text(1.2, 4.0, 'TD error δ\n(优势 A)', ha='center', fontsize=9,
+            color='#BF4C4C', fontweight='bold',
+            bbox=dict(fc='#FFF0F0', ec='#BF4C4C', boxstyle='round,pad=0.25'))
+
+    # Formula box
+    ax.add_patch(FancyBboxPatch((0.2, 0.3), 11.6, 1.3,
+                                boxstyle='round,pad=0.15', fc='#1A252F', ec='#5BAD6F',
+                                lw=2, alpha=0.95))
+    ax.text(6.0, 1.1,
+            'State s_t    Action a_t    Reward r_t    Return R_t = Σ γ^k r_{t+k}',
+            ha='center', va='center', fontsize=9.5, color='#AED6F1', fontweight='bold')
+    ax.text(6.0, 0.6,
+            'V_π(s) = E_π[R_t | s_t=s]      Q_π(s,a) = E_π[R_t | s_t=s, a_t=a]      A_π(s,a) = Q_π − V_π',
+            ha='center', va='center', fontsize=9, color='#F0FFF0')
+
+    plt.tight_layout()
+    path = os.path.join(OUT, 'rl_framework_summary.png')
+    plt.savefig(path, dpi=150, bbox_inches='tight')
+    plt.close()
+    print(f"Saved: {path}")
+
+
 if __name__ == '__main__':
     plot_rl_taxonomy()
     plot_sac_entropy()
     plot_sample_efficiency()
+    plot_rl_taxonomy_venn()
+    plot_rl_framework_summary()
     print("Ch11 done.")

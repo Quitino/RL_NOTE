@@ -22,6 +22,14 @@ DQN 的方法路线：学 Q 函数 → 从 Q 推出策略（取 argmax）。
   需要每步做内层优化 → 计算量爆炸
 ```
 
+**强化学习按策略优化方式的分类**：
+
+| 分类 | 核心思想 | 特点 | 代表算法 |
+|---|---|---|---|
+| **基于价值（Value-Based）** | 优化价值函数 $Q(s,a)$，间接推导策略 | 策略隐式，适合离散动作空间 | Q-Learning, DQN, SARSA |
+| **基于策略（Policy-Based）** | 直接优化策略函数 $\pi_\theta(a\|s)$ | 可处理连续动作，高方差但探索强 | REINFORCE, TRPO, PPO |
+| **Actor-Critic** | 结合价值函数（Critic）和策略函数（Actor） | 兼具两者优点，减少方差 | A2C, SAC, DDPG, PPO |
+
 **策略梯度**的思路：直接将策略参数化 $\pi_\theta$，用梯度上升直接优化期望回报：
 
 $$\theta \leftarrow \theta + \alpha \nabla_\theta J(\theta)$$
@@ -218,6 +226,8 @@ $$\nabla_\theta J(\theta) = \mathbb{E}_\pi\left[\sum_{t=0}^{T} \nabla_\theta \lo
 │ 探索机制         │ ε-greedy（显式）  │ 策略本身（内置）    │
 └──────────────────┴──────────────────┴───────────────────┘
 ```
+
+![Policy gradient vs value-based methods comparison: learning target, update equation, action space, policy type, exploration mechanism](asserts/ch08_policy_gradient/pg_vs_value_comparison.png)
 
 ---
 

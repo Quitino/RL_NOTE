@@ -59,6 +59,8 @@ graph LR
 
 ![Actor-Critic two-network architecture — data flow between Actor, Critic, and environment](asserts/ch09_actor_critic/actor_critic_arch.png)
 
+![RL framework summary: Actor π_θ, Critic V_w, environment interaction with state/action/reward flow and V/Q/A definitions](asserts/ch11_algorithms/rl_framework_summary.png)
+
 ---
 
 ## 9.3 优势函数 $A(s,a)$

@@ -5,6 +5,7 @@ Figures:
   - replay_buffer.png         : Experience replay buffer FIFO diagram
   - target_network_update.png : Target network hard-update schedule
   - dqn_stability.png         : Training stability (with vs without target net)
+  - dqn_networks.png          : DQN dual-network + replay buffer overview
 """
 import os
 import numpy as np
@@ -13,10 +14,11 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 
-plt.rcParams['font.family'] = 'DejaVu Sans'
+plt.rcParams['font.family'] = 'Noto Sans CJK JP'
+plt.rcParams['axes.unicode_minus'] = False
 plt.rcParams['font.size'] = 11
 
-OUT = os.path.join(os.path.dirname(__file__), '../../asserts/ch07_dqn')
+OUT = os.path.join(os.path.dirname(__file__), '../../docs/asserts/ch07_dqn')
 os.makedirs(OUT, exist_ok=True)
 
 
@@ -192,9 +194,77 @@ def plot_dqn_stability():
     print(f"Saved: {path}")
 
 
+# ── Figure 5: DQN Dual-Network + Replay Buffer Overview ──────────────────────
+def plot_dqn_networks():
+    _, ax = plt.subplots(figsize=(13, 7))
+    ax.set_xlim(0, 13)
+    ax.set_ylim(0, 8)
+    ax.axis('off')
+    ax.set_title('DQN Architecture: Dual Networks + Experience Replay\n'
+                 'Two key innovations that stabilize deep Q-learning',
+                 fontsize=12, fontweight='bold', pad=8)
+
+    def box(cx, cy, w, h, txt, color, fontsize=9.5):
+        ax.add_patch(FancyBboxPatch((cx - w/2, cy - h/2), w, h,
+                                    boxstyle='round,pad=0.15', fc=color, ec='#333',
+                                    lw=1.5, alpha=0.9))
+        ax.text(cx, cy, txt, ha='center', va='center', fontsize=fontsize,
+                color='white', fontweight='bold', multialignment='center')
+
+    def arr(x0, y0, x1, y1, lbl='', lw=2.0, color='#444444'):
+        ax.annotate('', xy=(x1, y1), xytext=(x0, y0),
+                    arrowprops=dict(arrowstyle='->', color=color, lw=lw))
+        if lbl:
+            mx, my = (x0+x1)/2, (y0+y1)/2
+            ax.text(mx + 0.2, my, lbl, fontsize=8, color=color)
+
+    # Environment
+    box(1.5, 4.0, 2.2, 1.0, 'Environment', '#555555', 10)
+    # Online network
+    box(5.5, 5.8, 3.0, 1.1, 'Online Network\nQ_θ(s, a)', '#4C8EBF', 10)
+    # Target network
+    box(5.5, 2.2, 3.0, 1.1, 'Target Network\nQ_{θ⁻}(s\', a\')', '#E8994C', 10)
+    # Replay buffer
+    box(9.5, 4.0, 2.8, 2.8, 'Replay\nBuffer D\n(s,a,r,s\')\n× N', '#9B59B6', 10)
+    # Loss
+    box(5.5, 4.0, 2.5, 1.1, 'MSE Loss\nL = (y − Q_θ)²', '#BF4C4C', 10)
+
+    # Arrows
+    arr(2.6, 4.0, 3.85, 5.4, 'state s', color='#4C8EBF')   # env → online
+    arr(2.6, 4.0, 3.85, 2.6, 'state s\'', color='#E8994C')  # env → target
+    arr(7.0, 5.8, 8.1, 4.7, 'Q_θ(s,a)', color='#4C8EBF')   # online → loss
+    arr(7.0, 2.2, 8.1, 3.3, 'max Q_{θ⁻}', color='#E8994C') # target → loss
+    arr(8.1, 4.0, 6.75, 4.0, '', color='#BF4C4C')           # loss → online (backprop)
+    ax.text(7.1, 4.25, 'backprop\nupdate θ', ha='center', fontsize=8, color='#BF4C4C')
+
+    # Replay buffer arrows
+    arr(2.6, 4.4, 8.1, 4.7, '(s,a,r,s\') stored', color='#9B59B6', lw=1.5)
+    arr(8.1, 3.5, 6.75, 5.5, 'random\nmini-batch', color='#9B59B6', lw=1.5)
+
+    # Target update
+    ax.annotate('', xy=(5.5, 3.0), xytext=(5.5, 5.25),
+                arrowprops=dict(arrowstyle='->', color='#5BAD6F', lw=1.8, linestyle='dashed',
+                                connectionstyle='arc3,rad=0.4'))
+    ax.text(3.7, 4.0, 'θ⁻ ← θ\nevery C steps', ha='center', fontsize=8.5,
+            color='#5BAD6F', fontweight='bold',
+            bbox=dict(fc='#F0FFF0', ec='#5BAD6F', boxstyle='round,pad=0.25'))
+
+    # TD target formula
+    ax.text(6.5, 0.7, 'TD target:  y = r  +  γ · max_{a\'} Q_{θ⁻}(s\', a\')',
+            ha='center', fontsize=10, color='#333',
+            bbox=dict(fc='#FFFDE7', ec='#F0C000', boxstyle='round,pad=0.4', lw=1.2))
+
+    plt.tight_layout()
+    path = os.path.join(OUT, 'dqn_networks.png')
+    plt.savefig(path, dpi=150, bbox_inches='tight')
+    plt.close()
+    print(f"Saved: {path}")
+
+
 if __name__ == '__main__':
     plot_dqn_architecture()
     plot_replay_buffer()
     plot_target_network()
     plot_dqn_stability()
+    plot_dqn_networks()
     print("Ch07 done.")

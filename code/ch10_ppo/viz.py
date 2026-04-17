@@ -4,6 +4,8 @@ Figures:
   - ppo_clip_objective.png   : PPO clip objective shape
   - trpo_vs_ppo.png          : TRPO trust region vs PPO clip boundary
   - ppo_training_loop.png    : PPO training loop flowchart
+  - trpo_derivation_flow.png : TRPO surrogate objective derivation flow
+  - trpo_ppo_comparison.png  : TRPO vs PPO feature comparison table
 """
 import os
 import numpy as np
@@ -13,10 +15,11 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch, Ellipse
 from matplotlib.patches import Arc
 
-plt.rcParams['font.family'] = 'DejaVu Sans'
+plt.rcParams['font.family'] = 'Noto Sans CJK JP'
+plt.rcParams['axes.unicode_minus'] = False
 plt.rcParams['font.size'] = 11
 
-OUT = os.path.join(os.path.dirname(__file__), '../../asserts/ch10_ppo')
+OUT = os.path.join(os.path.dirname(__file__), '../../docs/asserts/ch10_ppo')
 os.makedirs(OUT, exist_ok=True)
 
 
@@ -171,8 +174,136 @@ def plot_ppo_loop():
     print(f"Saved: {path}")
 
 
+# ── Figure 4: TRPO Derivation Flow ───────────────────────────────────────────
+def plot_trpo_derivation():
+    _, ax = plt.subplots(figsize=(13, 7.5))
+    ax.set_xlim(0, 13)
+    ax.set_ylim(0, 9)
+    ax.axis('off')
+    ax.set_title('TRPO: Surrogate Objective Derivation\n'
+                 'From J(θ\')-J(θ) to Constrained Optimization',
+                 fontsize=12, fontweight='bold', pad=8)
+
+    def box(cx, cy, w, h, txt, color, fontsize=9.5):
+        ax.add_patch(FancyBboxPatch((cx - w/2, cy - h/2), w, h,
+                                    boxstyle='round,pad=0.15', fc=color, ec='#333',
+                                    lw=1.5, alpha=0.9))
+        ax.text(cx, cy, txt, ha='center', va='center', fontsize=fontsize,
+                color='white', fontweight='bold', multialignment='center')
+
+    def arr(x0, y0, x1, y1, lbl=''):
+        ax.annotate('', xy=(x1, y1), xytext=(x0, y0),
+                    arrowprops=dict(arrowstyle='->', color='#444', lw=1.8))
+        if lbl:
+            ax.text((x0+x1)/2 + 0.2, (y0+y1)/2, lbl, fontsize=8, color='#555')
+
+    # Step 1
+    box(6.5, 8.3, 10.5, 0.85,
+        'Goal:  J(θ\') − J(θ) = E_{π_θ\'}[Σ_t γ^t A^{π_θ}(s_t, a_t)]',
+        '#4C8EBF', 10)
+    arr(6.5, 7.88, 6.5, 7.28, '引入状态访问分布 ν^π')
+
+    # Step 2
+    box(6.5, 6.9, 11.5, 0.85,
+        '= Σ_s ν^{π_θ\'}(s) · Σ_a π_θ\'(a|s) · A^{π_θ}(s,a)   (展开期望)',
+        '#4C8EBF', 10)
+    arr(6.5, 6.48, 6.5, 5.88, '忽略状态分布变化 ν^{π_θ\'} ≈ ν^{π_θ}')
+
+    # Step 3
+    box(6.5, 5.5, 11.5, 0.85,
+        'L_θ(θ\') = J(θ) + Σ_s ν^{π_θ}(s) · Σ_a π_θ\'(a|s) · A^{π_θ}(s,a)',
+        '#9B59B6', 10)
+    arr(6.5, 5.08, 6.5, 4.48, '重要性采样：用旧策略动作分布替代新策略')
+
+    # Step 4
+    box(6.5, 4.1, 12.0, 0.85,
+        'L_θ(θ\') = J(θ) + E_{s~ν^{π_θ}, a~π_θ} [π_θ\'(a|s)/π_θ(a|s) · A^{π_θ}(s,a)]',
+        '#9B59B6', 10)
+    arr(6.5, 3.68, 6.5, 3.08, '加入 KL 约束，确保近似有效')
+
+    # Final optimization box
+    ax.add_patch(FancyBboxPatch((0.8, 1.6), 11.4, 1.3,
+                                boxstyle='round,pad=0.2', fc='#1A252F', ec='#5BAD6F',
+                                lw=2.5, alpha=0.95))
+    ax.text(6.5, 2.55, 'max_{θ\'} L_θ(θ\')   =   max_{θ\'} E[  r_t(θ\') · A^{π_θ}(s,a)  ]',
+            ha='center', va='center', fontsize=10.5, color='#F0FFF0', fontweight='bold')
+    ax.text(6.5, 1.95, 's.t.   E_s[ D_KL(π_θ(·|s)  ‖  π_θ\'(·|s)) ]  ≤  δ',
+            ha='center', va='center', fontsize=10, color='#AED6F1', fontweight='bold')
+
+    # Annotations
+    ax.text(0.4, 6.9, '替代\n目标', ha='center', va='center', fontsize=9,
+            color='#9B59B6', fontweight='bold',
+            bbox=dict(fc='#F5F0FF', ec='#9B59B6', boxstyle='round,pad=0.3'))
+    ax.text(0.4, 4.1, '重要性\n采样形式', ha='center', va='center', fontsize=8.5,
+            color='#9B59B6', fontweight='bold',
+            bbox=dict(fc='#F5F0FF', ec='#9B59B6', boxstyle='round,pad=0.3'))
+    ax.text(0.5, 2.2, 'TRPO\n最终形式', ha='center', va='center', fontsize=9,
+            color='#5BAD6F', fontweight='bold',
+            bbox=dict(fc='#F0FFF0', ec='#5BAD6F', boxstyle='round,pad=0.3'))
+
+    ax.text(6.5, 0.7,
+            'r_t(θ\') = π_θ\'(a_t|s_t) / π_θ(a_t|s_t)  ← 概率比（重要性权重）',
+            ha='center', fontsize=9.5, color='#333',
+            bbox=dict(fc='#FFFDE7', ec='#F0C000', boxstyle='round,pad=0.35'))
+
+    plt.tight_layout()
+    path = os.path.join(OUT, 'trpo_derivation_flow.png')
+    plt.savefig(path, dpi=150, bbox_inches='tight')
+    plt.close()
+    print(f"Saved: {path}")
+
+
+# ── Figure 5: TRPO vs PPO Comparison Table ────────────────────────────────────
+def plot_trpo_ppo_comparison():
+    _, ax = plt.subplots(figsize=(13, 5.5))
+    ax.set_xlim(0, 13)
+    ax.set_ylim(0, 7)
+    ax.axis('off')
+    ax.set_title('TRPO vs PPO: Feature Comparison', fontsize=13, fontweight='bold')
+
+    headers = ['特性', 'TRPO', 'PPO']
+    col_xs = [0.2, 4.0, 8.5]
+    col_widths = [3.6, 4.2, 4.2]
+    header_colors = ['#555555', '#4C8EBF', '#5BAD6F']
+    rows = [
+        ['约束方式', '强制 KL 散度约束\n（复杂二阶优化）', '截断或自适应 KL 惩罚\n（一阶优化）'],
+        ['计算效率', '低（需计算 Fisher 矩阵\n+ 共轭梯度 + 线搜索）', '高（直接梯度下降\n支持 mini-batch）'],
+        ['实现难度', '复杂（数百行代码）', '简单（约 10 行核心逻辑）'],
+        ['稳定性', '高（严格信任域保证）', '稍低但足够（clip 近似约束）'],
+        ['代表实现', 'OpenAI Baselines TRPO', 'Stable-Baselines3 / CleanRL'],
+    ]
+
+    header_y = 6.3
+    row_h = 0.9
+
+    for hdr, cx, cw, hc in zip(headers, col_xs, col_widths, header_colors):
+        ax.add_patch(FancyBboxPatch((cx, header_y - 0.38), cw, 0.76,
+                                    boxstyle='round,pad=0.08', fc=hc, ec='white', lw=1))
+        ax.text(cx + cw/2, header_y, hdr, ha='center', va='center',
+                fontsize=10.5, color='white', fontweight='bold')
+
+    for ri, row in enumerate(rows):
+        y = header_y - (ri + 1) * row_h - 0.05
+        bg = '#F8F9FA' if ri % 2 == 0 else '#FFFFFF'
+        for ci, (cell, cx, cw) in enumerate(zip(row, col_xs, col_widths)):
+            ax.add_patch(FancyBboxPatch((cx, y - 0.4), cw, 0.8,
+                                        boxstyle='square,pad=0', fc=bg, ec='#DDDDDD', lw=0.8))
+            fc = '#333333' if ci == 0 else ('#1A5276' if ci == 1 else '#1E8449')
+            fw = 'bold' if ci == 0 else 'normal'
+            ax.text(cx + cw/2, y, cell, ha='center', va='center', fontsize=8.8,
+                    color=fc, fontweight=fw, multialignment='center')
+
+    plt.tight_layout()
+    path = os.path.join(OUT, 'trpo_ppo_comparison.png')
+    plt.savefig(path, dpi=150, bbox_inches='tight')
+    plt.close()
+    print(f"Saved: {path}")
+
+
 if __name__ == '__main__':
     plot_ppo_clip()
     plot_trpo_vs_ppo()
     plot_ppo_loop()
+    plot_trpo_derivation()
+    plot_trpo_ppo_comparison()
     print("Ch10 done.")

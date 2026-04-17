@@ -4,6 +4,8 @@ Figures:
   - epsilon_greedy.png       : Epsilon-greedy exploration decay schedule
   - on_off_policy.png        : On-policy vs off-policy data flow diagram
   - q_vs_sarsa.gif           : Q-Learning vs Sarsa update animation
+  - q_table_structure.png    : Q-table states×actions matrix with update loop
+  - on_off_policy_table.png  : On-Policy vs Off-Policy comparison table
 """
 import os
 import numpy as np
@@ -13,10 +15,11 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.patches import FancyBboxPatch
 
-plt.rcParams['font.family'] = 'DejaVu Sans'
+plt.rcParams['font.family'] = 'Noto Sans CJK JP'
+plt.rcParams['axes.unicode_minus'] = False
 plt.rcParams['font.size'] = 11
 
-OUT = os.path.join(os.path.dirname(__file__), '../../asserts/ch06_qlearning')
+OUT = os.path.join(os.path.dirname(__file__), '../../docs/asserts/ch06_qlearning')
 os.makedirs(OUT, exist_ok=True)
 
 
@@ -203,8 +206,158 @@ def plot_q_vs_sarsa_anim():
     print(f"Saved: {path}")
 
 
+# ── Figure 4: Q-Table Structure ──────────────────────────────────────────────
+def plot_q_table_structure():
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5.5))
+    fig.suptitle('Q-Learning: Q-Table Structure and Update Mechanism', fontsize=13, fontweight='bold')
+
+    # Left: Q-table grid
+    ax = axes[0]
+    ax.set_xlim(-0.5, 5.5)
+    ax.set_ylim(-1.0, 5.5)
+    ax.axis('off')
+    ax.set_title('Q-Table: Q(s, a) for all state-action pairs', fontsize=10, fontweight='bold')
+
+    n_states = 4
+    n_actions = 3
+    action_labels = ['a₀', 'a₁', 'a₂']
+    state_labels = ['S₀', 'S₁', 'S₂', 'S₃']
+    # Sample Q values
+    q_vals = np.array([[0.2, 0.8, 0.1],
+                        [0.5, 0.3, 0.9],
+                        [0.7, 0.4, 0.2],
+                        [0.1, 0.6, 0.4]])
+    cmap = plt.cm.YlOrRd
+
+    # Header row
+    for j, albl in enumerate([''] + action_labels):
+        x = j
+        ax.add_patch(FancyBboxPatch((x, n_states), 0.9, 0.6,
+                                    boxstyle='square,pad=0.0', fc='#4C8EBF', ec='white', lw=1.5))
+        ax.text(x + 0.45, n_states + 0.3, albl, ha='center', va='center',
+                fontsize=10, color='white', fontweight='bold')
+
+    for i in range(n_states):
+        y = n_states - 1 - i
+        # State label column
+        ax.add_patch(FancyBboxPatch((0, y), 0.9, 0.85,
+                                    boxstyle='square,pad=0.0', fc='#9B59B6', ec='white', lw=1.5))
+        ax.text(0.45, y + 0.42, state_labels[i], ha='center', va='center',
+                fontsize=10, color='white', fontweight='bold')
+        for j in range(n_actions):
+            v = q_vals[i, j]
+            c = cmap(v)
+            ax.add_patch(FancyBboxPatch((j + 1, y), 0.9, 0.85,
+                                        boxstyle='square,pad=0.0', fc=c, ec='white', lw=1.5))
+            ax.text(j + 1.45, y + 0.42, f'{v:.1f}', ha='center', va='center', fontsize=10)
+
+    # Highlight best action for S1
+    best_j = np.argmax(q_vals[1])
+    ax.add_patch(FancyBboxPatch((best_j + 1, n_states - 2), 0.9, 0.85,
+                                boxstyle='square,pad=0.0', fc='none', ec='#E8994C', lw=3))
+    ax.text(best_j + 1.45, n_states - 2 - 0.35, 'max', ha='center', va='center',
+            fontsize=8.5, color='#E8994C', fontweight='bold')
+
+    ax.text(2.5, -0.6, 'Policy: π(s) = argmax_a Q(s, a)', ha='center', fontsize=9.5,
+            bbox=dict(fc='#FFFDE7', ec='#F0C000', boxstyle='round,pad=0.3'))
+
+    # Right: Q-update loop diagram
+    ax2 = axes[1]
+    ax2.set_xlim(0, 10)
+    ax2.set_ylim(0, 7)
+    ax2.axis('off')
+    ax2.set_title('Q-Learning Update Rule', fontsize=10, fontweight='bold')
+
+    def box2(cx, cy, w, h, txt, color):
+        ax2.add_patch(FancyBboxPatch((cx - w/2, cy - h/2), w, h,
+                                     boxstyle='round,pad=0.15', fc=color, ec='#333', lw=1.5, alpha=0.9))
+        ax2.text(cx, cy, txt, ha='center', va='center', fontsize=9, color='white', fontweight='bold')
+
+    def arr2(x0, y0, x1, y1, lbl=''):
+        ax2.annotate('', xy=(x1, y1), xytext=(x0, y0),
+                     arrowprops=dict(arrowstyle='->', color='#444', lw=2.0))
+        if lbl:
+            mx, my = (x0+x1)/2, (y0+y1)/2
+            ax2.text(mx + 0.15, my, lbl, fontsize=8, color='#555')
+
+    box2(5, 6.3, 6.5, 0.85, 'Observe state s, choose action a (ε-greedy)', '#4C8EBF')
+    arr2(5, 5.88, 5, 5.28, '')
+    box2(5, 4.9, 6.5, 0.75, 'Execute a → get reward r, next state s\'', '#9B59B6')
+    arr2(5, 4.52, 5, 3.92, '')
+    box2(5, 3.55, 7.5, 0.75, 'Compute TD target:  y = r + γ · max_{a\'} Q(s\', a\')', '#5BAD6F')
+    arr2(5, 3.17, 5, 2.57, '')
+    box2(5, 2.2, 7.5, 0.75, 'Update:  Q(s,a) ← Q(s,a) + α·(y − Q(s,a))', '#E8994C')
+    arr2(5, 1.82, 5, 1.22, '')
+    box2(5, 0.85, 4.5, 0.65, 's ← s\'  (advance to next state)', '#4C8EBF')
+
+    # TD error bracket
+    ax2.annotate('', xy=(8.8, 2.2), xytext=(8.8, 3.55),
+                 arrowprops=dict(arrowstyle='<->', color='#BF4C4C', lw=1.8))
+    ax2.text(9.2, 2.87, 'TD\nerror', ha='left', fontsize=8.5, color='#BF4C4C', fontweight='bold')
+
+    plt.tight_layout()
+    path = os.path.join(OUT, 'q_table_structure.png')
+    plt.savefig(path, dpi=150, bbox_inches='tight')
+    plt.close()
+    print(f"Saved: {path}")
+
+
+# ── Figure 5: On/Off-Policy Comparison Table ──────────────────────────────────
+def plot_on_off_policy_table():
+    _, ax = plt.subplots(figsize=(13, 6))
+    ax.set_xlim(0, 13)
+    ax.set_ylim(0, 7)
+    ax.axis('off')
+    ax.set_title('On-Policy vs Off-Policy: Comprehensive Comparison', fontsize=13, fontweight='bold')
+
+    headers = ['Property', 'On-Policy (同策略)', 'Off-Policy (异策略)']
+    rows = [
+        ['定义', '行为策略 = 目标策略', '行为策略 ≠ 目标策略'],
+        ['数据使用', '只能用当前策略采集的数据', '可用历史/任意策略数据（经验回放）'],
+        ['数据一致性', '好，无分布偏移', '需要重要性采样修正偏差'],
+        ['样本效率', '低（数据用完即弃）', '高（数据可复用）'],
+        ['收敛性', '理论收敛性好', '需处理IS偏差，实现更复杂'],
+        ['适用场景', '仿真充足，高成本交互', '真机实验，成本高的环境'],
+        ['代表算法', 'SARSA, PPO, TRPO', 'Q-Learning, DQN, DDPG, SAC'],
+    ]
+
+    col_widths = [3.5, 4.5, 4.5]
+    col_xs = [0.3, 4.1, 8.8]
+    row_h = 0.72
+    header_y = 6.2
+
+    # Header
+    header_colors = ['#555555', '#4C8EBF', '#E8994C']
+    for hdr, cx, cw, hc in zip(headers, col_xs, col_widths, header_colors):
+        ax.add_patch(FancyBboxPatch((cx, header_y - 0.35), cw, 0.7,
+                                    boxstyle='round,pad=0.08', fc=hc, ec='white', lw=1))
+        ax.text(cx + cw/2, header_y, hdr, ha='center', va='center',
+                fontsize=10, color='white', fontweight='bold')
+
+    # Rows
+    for ri, row in enumerate(rows):
+        y = header_y - (ri + 1) * row_h - 0.1
+        bg = '#F8F9FA' if ri % 2 == 0 else '#FFFFFF'
+        for ci, (cell, cx, cw) in enumerate(zip(row, col_xs, col_widths)):
+            ax.add_patch(FancyBboxPatch((cx, y - 0.32), cw, 0.64,
+                                        boxstyle='square,pad=0.0', fc=bg,
+                                        ec='#DDDDDD', lw=0.8))
+            fc = '#333333' if ci == 0 else ('#4C8EBF' if ci == 1 else '#E8994C')
+            fw = 'bold' if ci == 0 else 'normal'
+            ax.text(cx + cw/2, y, cell, ha='center', va='center',
+                    fontsize=8.8, color=fc, fontweight=fw)
+
+    plt.tight_layout()
+    path = os.path.join(OUT, 'on_off_policy_table.png')
+    plt.savefig(path, dpi=150, bbox_inches='tight')
+    plt.close()
+    print(f"Saved: {path}")
+
+
 if __name__ == '__main__':
     plot_epsilon_greedy()
     plot_on_off_policy()
     plot_q_vs_sarsa_anim()
+    plot_q_table_structure()
+    plot_on_off_policy_table()
     print("Ch06 done.")

@@ -106,6 +106,20 @@ $$Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha \left[ r_t + \gamma \max_{a'} Q(s_
     ↑ 注意：更新用 max，而非实际选的 a'
 ```
 
+### Q-Table 结构与更新机制
+
+Q-Learning 维护一张**状态-动作值表**，记录每个 $(s, a)$ 对的预期累积奖励。策略由表中每行的最大值决定：$\pi(s) = \arg\max_a Q(s, a)$。
+
+![Q-table structure showing states×actions matrix with update loop and TD error annotation](asserts/ch06_qlearning/q_table_structure.png)
+
+**更新公式中各项含义**：
+
+$$\underbrace{Q(s,a)}_{\text{New Q Value}} \leftarrow \underbrace{Q(s,a)}_{\text{Old Q Value}} + \alpha \underbrace{\left[\underbrace{r + \gamma \max_{a'} Q(s', a')}_{\text{TD Target}} - Q(s,a)\right]}_{\text{TD error}}$$
+
+- **TD error（时序差分误差）**：目标值与当前估计的差距，驱动更新
+- **学习率 α**：控制每次更新的步长（0~1）
+- **折扣因子 γ**：控制对未来奖励的重视程度（0~1）
+
 ---
 
 ## 6.5 On-Policy vs Off-Policy 的本质区别
@@ -156,6 +170,10 @@ Sarsa：      学到绕远路走的安全路径（次优但鲁棒）
 ![On-policy (Sarsa) vs off-policy (Q-Learning) data flow diagram](asserts/ch06_qlearning/on_off_policy.png)
 
 ![Q-Learning vs Sarsa value convergence animation on a grid world](asserts/ch06_qlearning/q_vs_sarsa.gif)
+
+### On-Policy vs Off-Policy 全面对比
+
+![On-Policy vs Off-Policy comprehensive comparison table](asserts/ch06_qlearning/on_off_policy_table.png)
 
 ---
 
