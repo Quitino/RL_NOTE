@@ -65,12 +65,16 @@ $$V^*(s) = \max_a \sum_{s'} \mathcal{P}(s'|s,a) \left[ \mathcal{R}(s,a,s') + \ga
 
 $$Q^*(s, a) = \sum_{s'} \mathcal{P}(s'|s,a) \left[ \mathcal{R}(s,a,s') + \gamma \max_{a'} Q^*(s', a') \right]$$
 
-**关键区别**：Bellman 期望方程中对动作取加权平均（$\sum_a \pi(a|s)$），Bellman 最优方程中对动作取最大值（$\max_a$）。
+**关键区别**：Bellman 期望方程中对动作取加权平均（$\sum_a \pi(a \vert s)$），Bellman 最优方程中对动作取最大值（$\max_a$）。
 
 ```
 Bellman 期望方程：  V(s) = Σ_a π(a|s) · [...]   ← 给定策略，平均
 Bellman 最优方程：  V*(s) = max_a [...]           ← 选最优动作
 ```
+
+![Bellman backup diagrams for all four equations — expectation and optimality forms (static)](../asserts/ch04_dp/bellman_backup_static.png)
+
+![Bellman backup animated — step-by-step propagation through the backup tree](../asserts/ch04_dp/bellman_backup_anim.gif)
 
 ---
 
@@ -143,6 +147,8 @@ graph LR
 
 **收敛性**：有限状态和动作空间下，策略迭代在有限步内收敛（策略空间有限，且每次严格改进）。
 
+![Policy iteration convergence animation — value function and greedy policy updating on a grid world](../asserts/ch04_dp/policy_iteration_anim.gif)
+
 ---
 
 ## 4.6 值迭代（Value Iteration）
@@ -176,6 +182,10 @@ $$V_{k+1}(s) \leftarrow \max_a \sum_{s'} \mathcal{P}(s'|s,a) \left[ \mathcal{R}(
 │ 实际效率       │ 通常更快             │ 简单实现             │
 └────────────────┴─────────────────────┴─────────────────────┘
 ```
+
+![Value iteration convergence animation — Bellman optimality operator applied iteratively](../asserts/ch04_dp/value_iteration_anim.gif)
+
+![Policy iteration vs value iteration comparison — convergence speed and Q-value heatmaps](../asserts/ch04_dp/vi_pi_comparison.png)
 
 ---
 

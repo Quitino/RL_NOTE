@@ -119,6 +119,10 @@ $$y = r + \gamma \max_{a'} Q_{\theta^-}(s', a') \quad \text{（用旧参数）}$
   θ⁻ ← τθ + (1-τ)θ⁻ （每步微小更新，τ=0.005）
 ```
 
+![Target network hard-update schedule — online vs target parameter divergence over training](../asserts/ch07_dqn/target_network_update.png)
+
+![DQN training stability: loss curves with and without target network](../asserts/ch07_dqn/dqn_stability.png)
+
 ---
 
 ## 7.6 经验回放（Experience Replay）：打破时序相关性
@@ -159,6 +163,8 @@ Replay Buffer（容量 N = 1,000,000）：
 2. **数据复用**：每条经验可被多次使用，提升样本效率
 
 **代价**：经验回放要求算法是 Off-Policy 的（数据可以来自旧策略），这是为什么 DQN 用 Q-Learning 而非 Sarsa。
+
+![Experience replay buffer FIFO diagram — random mini-batch sampling breaks temporal correlation](../asserts/ch07_dqn/replay_buffer.png)
 
 ---
 

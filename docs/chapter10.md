@@ -112,6 +112,10 @@ L^CLIP 关于 r_t 的函数形状：
 
 **直觉总结**：PPO-Clip 是一个**悲观的（pessimistic）**目标——当改变有利时，限制获益上限；当改变不利时，也限制损失下限。这确保了每次更新不会偏离旧策略太远。
 
+![PPO-Clip objective shape: surrogate ratio r vs clipped objective for positive and negative advantage](../asserts/ch10_ppo/ppo_clip_objective.png)
+
+![TRPO trust region (KL constraint) vs PPO-Clip boundary in parameter space](../asserts/ch10_ppo/trpo_vs_ppo.png)
+
 ---
 
 ## 10.4 PPO 完整损失函数
@@ -160,6 +164,8 @@ PPO 算法（On-Policy）
   ⑤ 更新旧策略：θ_old ← θ
      可选：若 KL(π_old‖π_new) > KL_target，提前停止
 ```
+
+![PPO training loop flowchart — from initialization through rollout collection, GAE computation, to K-epoch updates](../asserts/ch10_ppo/ppo_training_loop.png)
 
 **与 DQN 的关键区别**：
 
@@ -332,12 +338,44 @@ SAC 优势（第11章详述）：
 
 ---
 
+## 10.11 PPO in Practice: 2025–2026 Developments
+
+Since the original PPO paper (Schulman et al., 2017), the algorithm has become the undisputed workhorse of humanoid robot locomotion. Here are the most significant developments through early 2026.
+
+### Large-Scale Humanoid Deployments
+
+**Unitree G1 / H1** — Unitree's open-platform robots have become the community standard for PPO-based locomotion research. By late 2024 and into 2025, teams worldwide demonstrated G1 walking on varied terrain, stair climbing, and recovery from pushes — all trained with PPO + domain randomization in IsaacLab. Key insight: **curriculum on terrain difficulty** (flat → slopes → stairs → outdoor) dramatically outperforms training on all terrain types simultaneously.
+
+**Figure AI (Figure 02, 2025)** — Figure's second-generation humanoid integrated a whole-body controller trained largely with PPO variants, enabling fluid loco-manipulation. The key architectural choice was **asymmetric Actor-Critic**: the Critic receives privileged simulation state (full body dynamics) while the Actor only sees onboard sensor observations — this closes the sim-to-real gap without explicit adaptation layers.
+
+**1X Technologies (Neo, 2025)** — Demonstrated end-to-end locomotion-manipulation policies using a PPO-based framework with retargeted motion priors from human motion capture.
+
+### Refined PPO Hyperparameters for Humanoid RL (2025 Community Consensus)
+
+| Hyperparameter | Typical Value (humanoid loco) | Notes |
+|---|---|---|
+| Clip ε | 0.2 | Standard; reduce to 0.1 for fine-tuning on real hardware |
+| K epochs | 5–10 | More epochs → better sample efficiency but instability risk |
+| Mini-batch size | 4096–16384 | Larger batches stabilize training with 4096+ parallel envs |
+| GAE λ | 0.95–0.98 | Higher λ works well with long episodes |
+| Discount γ | 0.99 | Standard; 0.995 for tasks requiring long-horizon planning |
+| Entropy coeff c₂ | 0.001–0.01 | Critical for preventing premature determinism |
+| Learning rate | 1e-4 to 3e-4 with cosine decay | Linear warmup for first 5% of training |
+| Value loss coeff c₁ | 0.5–1.0 | Clipped value loss (PPO2) is now standard |
+
+### PPO Variants Gaining Traction (2024–2025)
+
+**PPO with Advantage Normalization per Mini-batch** — Normalizing advantages within each mini-batch (not across the full rollout) significantly reduces variance from correlated environments in parallel training.
+
+**Recurrent PPO (RPPO)** — Replacing the MLP Actor with an LSTM/GRU handles the partial observability of real robot sensors more robustly than frame stacking, at the cost of ~2× training time.
+
+**PPO + Reward Shaping from Motion Priors** — Incorporating reference motion from MoCap data (via AMP-style discriminator or direct tracking loss) alongside the task reward enables more natural, energy-efficient gaits and is now considered best practice for bipedal locomotion.
+
+---
+
 ## 本章小结
 
-```
-PPO 的演进逻辑：
 
-  普通 PG → 步长难控制 → 训练不稳定
     ↓
   TRPO → KL 约束步长 → 理论好但实现难
     ↓

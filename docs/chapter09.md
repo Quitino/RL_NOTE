@@ -57,6 +57,8 @@ graph LR
 
 **关键思想**：Critic 用 TD 误差 $\delta_t = r_t + \gamma V_w(s_{t+1}) - V_w(s_t)$ 替代 MC 回报 $G_t$ 来指导 Actor 的更新。
 
+![Actor-Critic two-network architecture — data flow between Actor, Critic, and environment](../asserts/ch09_actor_critic/actor_critic_arch.png)
+
 ---
 
 ## 9.3 优势函数 $A(s,a)$
@@ -178,6 +180,10 @@ $$\hat{A}_t^{\text{GAE}} = \delta_t + (\gamma\lambda)\delta_{t+1} + (\gamma\lamb
 ```
 
 **为什么叫"广义"**：GAE 统一了从单步 TD 到 MC 的所有中间情形。
+
+![GAE lambda interpolation between TD(0) and Monte Carlo — bias/variance tradeoff and delta weights](../asserts/ch09_actor_critic/gae_lambda.png)
+
+![Advantage function A(s,a) = Q(s,a) - V(s): Q values, baseline V, and advantage decomposition](../asserts/ch09_actor_critic/advantage_fn.png)
 
 ---
 

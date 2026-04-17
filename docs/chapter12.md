@@ -119,6 +119,8 @@ domain_rand = {
 }
 ```
 
+![Domain randomization parameter distributions and their effect on sim-to-real transfer](../asserts/ch12_sim_to_real/domain_randomization.png)
+
 ---
 
 ## 12.4 奖励函数设计的艺术
@@ -190,6 +192,8 @@ def compute_reward(env):
             r_torque + 0.2 * r_feet_air + 
             0.01 * r_action_rate + 0.5 * r_orientation)
 ```
+
+![Reward component breakdown for humanoid locomotion training](../asserts/ch12_sim_to_real/reward_breakdown.png)
 
 ---
 
@@ -346,6 +350,8 @@ GPU：单卡 A100 或 4090
 [ ] 真机测试顺序：悬挂测试 → 低速行走 → 全速
 ```
 
+![Sim-to-Real deployment pipeline — from simulation training to real robot deployment](../asserts/ch12_sim_to_real/sim2real_pipeline.png)
+
 ### 常见 Sim-to-Real 失败模式
 
 ```
@@ -390,6 +396,65 @@ rsl_rl                   ETH 高性能 PPO 实现（被上述调用）★★★�
 
 AMP（Motion Priors）     运动先验引导的自然步态           ★★★★
                          → nv-tlabs/AMP_for_hardware
+```
+
+---
+
+## 12.9 Sim-to-Real Advances: 2025–2026
+
+The sim-to-real gap has narrowed dramatically since 2022, with several key advances making real-robot deployment increasingly reliable.
+
+### Whole-Body Control and Loco-Manipulation
+
+The boundary between locomotion and manipulation has blurred. By 2025, whole-body controllers trained in simulation could transfer reliably to real humanoids for tasks combining movement and arm use. Key enablers:
+
+- **Asymmetric Actor-Critic with Privileged Information**: The Critic receives full physics state during training (contact forces, exact body velocities), while the Actor receives only onboard sensor observations. This closes the sim-to-real gap without explicit adaptation modules.
+- **Unitree G1 Whole-Body Control**: Multiple research groups demonstrated loco-manipulation tasks — carrying objects while walking, opening doors, getting up from the floor — using PPO + domain randomization in IsaacLab.
+
+### Real-World Deployment Results (2025)
+
+| Robot | Task | Method | Notes |
+| --- | --- | --- | --- |
+| Unitree G1 | Walking on diverse terrain | PPO + IsaacLab | Open-source, replicated by 50+ groups |
+| Unitree H1 | Stair climbing + outdoor | PPO + curriculum | Terrain curriculum: flat→slopes→stairs |
+| Figure 02 | Loco-manipulation | PPO + motion priors | Asymmetric A-C, retargeted MoCap |
+| Boston Dynamics Atlas | Parkour | Custom RL + MPC | Combined learning + planning |
+| 1X Neo | Full-body teleoperation → RL | BC + DAgger fine-tune | Human demo bootstrapping |
+
+### Adaptive Sim-to-Real: Online Adaptation
+
+**RMA (Rapid Motor Adaptation)** (Kumar et al., 2021) established the paradigm: train a base policy with full privileged state, then distill an adaptation module that estimates environmental parameters from history. By 2025, extensions included:
+
+1. **Online Domain Adaptation**: Continuously update a lightweight adapter during deployment using recent interaction history — no need for explicit re-training when terrain or payload changes.
+2. **Sensor Failure Robustness**: Policies trained with random sensor dropout in simulation transfer to real robots even when sensors partially fail, without explicit fault detection.
+
+### Genesis Simulator (2024–2025)
+
+**Genesis** ([Genesis-Embodied-AI/Genesis](https://github.com/Genesis-Embodied-AI/Genesis)), released late 2024, demonstrated GPU-accelerated differentiable simulation at 430,000 FPS for simple environments — roughly 80× faster than Isaac Gym. By 2025, Genesis-based training pipelines were being evaluated for humanoid locomotion, with promising early results on sim-to-real transfer quality due to its higher physical accuracy for contacts.
+
+### MuJoCo MPC and Contact-Rich Manipulation
+
+**MuJoCo MPC (MJPC)** (Howell et al., 2022) combined trajectory optimization with learned components, enabling fast on-robot replanning at 500+ Hz. For contact-rich tasks where pure RL struggles (precise foothold placement, dexterous grasping), MJPC + RL hybrid approaches showed superior performance in 2025 benchmarks.
+
+**GitHub**: [google-deepmind/mujoco_mpc](https://github.com/google-deepmind/mujoco_mpc)
+
+### Emerging Best Practices (2025–2026)
+
+```
+Domain Randomization:
+  - Adaptive DR: start narrow, expand ranges as policy improves
+  - System identification + targeted randomization (not uniform)
+  - Measured real-robot parameters → tighter randomization bounds
+
+Reward Engineering:
+  - Style rewards from motion capture (AMP/MotionLib) now standard
+  - Prefer energy efficiency terms over hard constraints
+  - Foot clearance + symmetry terms reduce limping behaviors
+
+Deployment:
+  - Safety filter layer (CBF or simple geometric) in hardware loop
+  - Gradual rollout: suspension → treadmill → outdoor
+  - Online logging of sensor residuals for drift detection
 ```
 
 ---

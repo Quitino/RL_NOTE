@@ -41,6 +41,8 @@ RL 算法的两大核心维度：
                      SAC-Discrete
 ```
 
+![RL algorithm taxonomy tree: model-based vs model-free, on-policy vs off-policy](../asserts/ch11_algorithms/rl_taxonomy.png)
+
 ---
 
 ## 11.2 基于模型的 RL（Model-Based RL）
@@ -108,7 +110,7 @@ $$Q^*(s,a) = r + \gamma \mathbb{E}_{s'}[V^*(s')]$$
 $$V^*(s) = \mathbb{E}_{a \sim \pi}[Q^*(s,a) - \alpha \log \pi(a|s)]$$
 
 **三个网络**（Haarnoja et al., 2018 v2）：
-- Actor：$\pi_\theta(a|s)$（Squashed Gaussian）
+- Actor：$\pi_\theta(a \vert s)$（Squashed Gaussian）
 - Critic $\times$ 2：$Q_{\phi_1}(s,a), Q_{\phi_2}(s,a)$（取最小值，减小高估）
 - 自动调节 $\alpha$
 
@@ -121,6 +123,8 @@ SAC 更新步骤：
   4. 更新 Actor：最大化 Q - α·log π（重参数化梯度）
   5. 更新 α（可选）：调整熵目标
 ```
+
+![SAC entropy-regularized objective: policy distributions with different entropy and temperature α effect](../asserts/ch11_algorithms/sac_entropy.png)
 
 **论文**：*Soft Actor-Critic: Off-Policy Maximum Entropy Deep Reinforcement Learning* (Haarnoja et al., 2018) — [arXiv:1801.01290](https://arxiv.org/abs/1801.01290)  
 **GitHub**：[haarnoja/sac](https://github.com/haarnoja/sac)（原版）  
@@ -240,6 +244,37 @@ $$L^{CQL} = \alpha \cdot \mathbb{E}_{s \sim D, a \sim \pi}[Q(s,a)] - \alpha \cdo
 训练稳定性：PPO > A2C > SAC > TD3 > DDPG
 工程实现难度：DQN < PPO < SAC < TD3 < TRPO < MBPO
 ```
+
+![Sample efficiency vs stability trade-off for major RL algorithms](../asserts/ch11_algorithms/sample_efficiency.png)
+
+---
+
+## 11.8 2025–2026 Algorithm Advances
+
+The RL algorithm landscape has evolved significantly since 2024, particularly at the intersection with generative models and large-scale robot training.
+
+### DreamerV3 and World Models for Robotics
+
+**DreamerV3** (Hafner et al., 2023–2024) matured into a practical tool for physical robot learning. Its key innovation — learning a compact latent world model and training the policy entirely in imagination — enables high sample efficiency on real hardware where environment interactions are expensive. By 2025, DreamerV3 variants achieved competitive locomotion performance with 10× fewer real robot samples than PPO baselines.
+
+**Key insight**: For tasks where simulation is unreliable or unavailable, world-model-based RL offers a path to real-robot learning without large-scale sim-to-real pipelines.
+
+### Diffusion Policies and Flow Matching
+
+**Diffusion Policy** (Chi et al., 2023) and its successor **Flow Matching Policy** demonstrated that treating policy learning as a score-matching / generative modeling problem produces more expressive, multimodal action distributions than Gaussian policies. By 2025, these were being applied to whole-body loco-manipulation tasks where the policy must handle multiple feasible motion modes.
+
+**Relevance**: For contact-rich tasks (getting up from the floor, dexterous manipulation), diffusion policies outperform standard Actor-Critic on mode coverage. For pure locomotion speed/efficiency, PPO remains dominant.
+
+### RLHF Adaptations for Physical Robots
+
+**Reinforcement Learning from Human Feedback (RLHF)** — originally developed for LLMs — was adapted for physical robots in 2024–2025. The key challenge is that human preference labels are expensive to collect for robot trajectories. Two adaptations gained traction:
+
+1. **Reward Model Pre-training from Video**: Train a reward model from human-labeled robot video clips, then use it to shape RL rewards — avoiding the need for manual reward engineering.
+2. **Constitutional AI for Robots**: Use an LLM to generate preference labels from high-level task descriptions, bootstrapping reward models without direct human annotation.
+
+### Large-Scale Multi-Task RL
+
+Projects like **HumanoidBench** (2024) and **OKAMI** (2025) established standardized benchmarks for multi-task humanoid RL, enabling fair comparison across algorithms. The emerging consensus: **PPO + curriculum + domain randomization** remains the most reliable pipeline for locomotion, while **SAC + offline pretraining** (from demonstrations) is preferred for dexterous manipulation.
 
 ---
 

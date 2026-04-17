@@ -26,7 +26,7 @@ DQN 的方法路线：学 Q 函数 → 从 Q 推出策略（取 argmax）。
 
 $$\theta \leftarrow \theta + \alpha \nabla_\theta J(\theta)$$
 
-其中 $J(\theta) = \mathbb{E}_{\tau \sim \pi_\theta}[G_0]$ 是期望累积奖励。
+其中 $J(\theta) = \mathbb{E}_{\tau\sim\pi_\theta}[G_0]$ 是期望累积奖励。
 
 ---
 
@@ -98,6 +98,8 @@ $$\boxed{\nabla_\theta J(\theta) = \mathbb{E}_{\tau \sim \pi_\theta}\left[\sum_{
 2. 可以用蒙特卡洛采样估计（用实际轨迹）
 3. $G_t$（回报）高的轨迹，其动作的对数概率梯度被放大——"好的动作更可能被选择"
 
+![Policy gradient theorem derivation flow — from objective J(θ) through log-derivative trick to estimator](../asserts/ch08_policy_gradient/pg_theorem_flow.png)
+
 ---
 
 ## 8.4 REINFORCE 算法
@@ -157,9 +159,13 @@ $$\nabla_\theta J(\theta) = \mathbb{E}_{\tau \sim \pi_\theta}\left[\sum_{t} \nab
 
 $$\mathbb{E}_\pi[\nabla_\theta \log \pi_\theta(a|s) \cdot b(s)] = b(s) \cdot \underbrace{\mathbb{E}_\pi[\nabla_\theta \log \pi_\theta(a|s)]}_{=0}$$
 
-因为 $\mathbb{E}_{a\sim\pi}[\nabla_\theta \log \pi_\theta(a|s)] = \nabla_\theta \underbrace{\mathbb{E}_{a\sim\pi}[1]}_{=1} = 0$
+因为 $\mathbb{E}_{a\sim\pi}[\nabla_\theta \log \pi_\theta(a \vert s)] = \nabla_\theta \underbrace{\mathbb{E}_{a\sim\pi}[1]}_{=1} = 0$
 
 所以减去基线**不影响期望**，但能**大幅降低方差**。
+
+![REINFORCE high variance: G_t distributions across episodes and gradient variance vs batch size](../asserts/ch08_policy_gradient/reinforce_variance.png)
+
+![Baseline subtraction variance reduction animation — return distribution with and without baseline](../asserts/ch08_policy_gradient/baseline_variance.gif)
 
 ### 常用基线：状态价值函数 $V(s_t)$
 

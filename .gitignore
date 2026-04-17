@@ -10,3 +10,6 @@ _site/
 # OS
 .DS_Store
 Thumbs.db
+openspec/
+.claude/
+.vscode/

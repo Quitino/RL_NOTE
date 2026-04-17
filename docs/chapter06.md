@@ -50,6 +50,8 @@ $$\pi(a|s) = \begin{cases} 1 - \varepsilon + \frac{\varepsilon}{|\mathcal{A}|} &
 ε 的衰减策略：ε_t = ε₀ · decay^t 或 ε_t = ε₀/sqrt(t)
 ```
 
+![Epsilon-greedy exploration decay schedule and action selection probability distribution](../asserts/ch06_qlearning/epsilon_greedy.png)
+
 ---
 
 ## 6.3 Sarsa：On-Policy TD 控制
@@ -151,6 +153,10 @@ Sarsa：      学到绕远路走的安全路径（次优但鲁棒）
      所以学会了远离悬崖）
 ```
 
+![On-policy (Sarsa) vs off-policy (Q-Learning) data flow diagram](../asserts/ch06_qlearning/on_off_policy.png)
+
+![Q-Learning vs Sarsa value convergence animation on a grid world](../asserts/ch06_qlearning/q_vs_sarsa.gif)
+
 ---
 
 ## 6.6 Q-Learning 的收敛性
@@ -161,7 +167,7 @@ Sarsa：      学到绕远路走的安全路径（次优但鲁棒）
 
 1. 所有状态-动作对被无限次访问（充分探索）
 2. 学习率 $\alpha_t$ 满足 Robbins-Monro 条件：
-   $$\sum_t \alpha_t = \infty, \quad \sum_t \alpha_t^2 < \infty$$
+   $\sum_t \alpha_t = \infty, \quad \sum_t \alpha_t^2 < \infty$
    例如：$\alpha_t = \frac{1}{t}$ 满足此条件
 
 **直觉**：条件 1 保证没有"死角"，条件 2 保证学习率衰减但总量足够大。
