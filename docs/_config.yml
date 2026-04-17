@@ -16,7 +16,7 @@ search_enabled: true
 heading_anchors: true
 
 # 页脚
-footer_content: "强化学习教程 &copy; 2024 | 基于强化学习的人形机器人行走控制"
+footer_content: "强化学习教程 &copy; 2026 | 基于强化学习的人形机器人行走控制"
 
 # 代码高亮
 kramdown:
