@@ -16,3 +16,7 @@ Thumbs.db
 openspec/
 .claude/
 .vscode/
+*/__pycache__/
+**/__pycache__/
+**/*.pyc
+**/*.pyo

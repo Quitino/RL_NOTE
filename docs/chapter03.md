@@ -190,19 +190,36 @@ $$V^\pi(s) = \sum_a \pi(a|s) Q^\pi(s, a) = \mathbb{E}_{a \sim \pi}[Q^\pi(s, a)]$
 
 状态价值 = 按策略对动作价值的加权平均。
 
+![V(s) = Σ π(a|s)·Q(s,a) backup tree: policy-weighted average over action values, Q nodes branch to next states with transition probabilities](asserts/ch03_mdp/v_q_backup_tree.png)
+
+动作价值 = 即时奖励 + 折扣后的下一状态价值的期望。
+
 ```
-                    ┌─────────┐
-                    │  V(s)   │  在状态 s 的期望回报
-                    └────┬────┘
-                         │ 按策略 π 选动作
-              ┌──────────┼──────────┐
-              │          │          │
-          Q(s,a₁)    Q(s,a₂)    Q(s,a₃)   各动作的期望回报
-              │          │          │
-         (执行a₁)   (执行a₂)   (执行a₃)
-              │          │          │
-         到新状态...  到新状态...  到新状态...
+              ┌──────────────┐
+              │   Q(s, a)    │  在状态 s 执行动作 a 的期望回报
+              └──────┬───────┘
+                     │ 执行动作 a，环境随机转移
+          ┌──────────┼──────────┐
+          │          │          │
+       P(s₁|s,a)  P(s₂|s,a)  P(s₃|s,a)   转移概率
+          │          │          │
+       V(s₁')     V(s₂')     V(s₃')       下一状态价值
+          │          │          │
+     (继续按π) (继续按π) (继续按π)
 ```
+
+$$Q^\pi(s, a) = \mathcal{R}(s,a) + \gamma \sum_{s'} \mathcal{P}(s'|s,a)\, V^\pi(s')$$
+
+与上方 V→Q 图合在一起，形成完整的 Bellman 备份图：
+
+
+```
+V(s) ──[按策略选动作]──► Q(s,aᵢ) ──[环境转移]──► V(s')
+  ↑                                                  │
+  └──────────────────────────────────────────────────┘
+              一步 Bellman 递推
+```
+
 
 ![State-value V(s) vs Q-value Q(s,a) relationship: V as policy-weighted average over Q values](asserts/ch03_mdp/v_vs_q.png)
 
