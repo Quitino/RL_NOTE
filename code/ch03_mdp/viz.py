@@ -130,7 +130,7 @@ def plot_v_vs_q():
 
     # Action nodes
     action_colors = ['#E8994C', '#5BAD6F', '#BF4C4C']
-    actions = ['a₁', 'a₂', 'a₃']
+    actions = ['a1', 'a2', 'a3']
     action_ys = [4.5, 3.0, 1.5]
     for a, ay, ac in zip(actions, action_ys, action_colors):
         box(4.5, ay, 1.6, 0.8, f'Q(s, {a})', ac)
