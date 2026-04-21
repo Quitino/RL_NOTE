@@ -720,6 +720,8 @@ Bellman 最优方程：V*(s)  = max_a Σ_{s'} P(s'|s,a)[R + γV*(s')]
 - David Silver UCL Course, Lecture 3: Planning by Dynamic Programming — [YouTube](https://www.youtube.com/watch?v=Nd1-UUMVfz4)
 
 
+-----
+
 ##  延伸阅读2
 
 
